@@ -1,0 +1,24 @@
+# The model script is a Colab export: it mounts Google Drive, so it cannot run
+# unchanged here. What is checked is that the code parses, the notebook is well
+# formed, and the dataset in data/ is the one the model expects.
+
+name: checks
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  checks:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Check the script, the notebook and the dataset
+        run: python3 tools/check.py

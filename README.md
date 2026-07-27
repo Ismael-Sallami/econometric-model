@@ -1,51 +1,108 @@
-# Modelo Econométrico para la Predicción de Obesidad
+# econometric-model
 
-Este proyecto presenta un modelo econométrico diseñado para estimar el grado de obesidad en función de variables relacionadas con características individuales y hábitos de vida. Este modelo tiene como objetivo principal identificar los factores más relevantes que influyen en la obesidad, proporcionando una herramienta útil para la creación de estrategias de intervención y políticas públicas.
+![Python](https://img.shields.io/badge/Python-3.12-3776AB)
+![statsmodels](https://img.shields.io/badge/statsmodels-0.14-4c72b0)
+[![checks](https://img.shields.io/github/actions/workflow/status/Ismael-Sallami/econometric-model/ci.yml?branch=main&logo=github&label=checks)](https://github.com/Ismael-Sallami/econometric-model/actions/workflows/ci.yml)
+![license](https://img.shields.io/badge/license-MIT-4c1)
 
-## Variables Incluidas
+An OLS model that estimates body weight from habits and personal traits, and the three
+diagnostics that decide whether its coefficients can be believed.
 
-### Variable Dependiente
-- *Peso (Weight):* Representa el grado de obesidad.
+## Context
 
-### Variables Independientes
-1. *Edad (Age):* Edad en años.
-2. *Altura (Height):* Altura en metros.
-3. *Antecedentes Familiares (Family History with Overweight):* Presencia de sobrepeso en familiares.
-4. *Consumo de Alimentos Calóricos (FAVC):* Frecuencia de ingesta de alimentos altos en calorías.
-5. *Consumo de Vegetales (FCVC):* Frecuencia de consumo de vegetales.
-6. *Número de Comidas Principales (NCP):* Cantidad de comidas principales diarias.
-7. *Consumo entre Comidas (CAEC):* Consumo de alimentos entre comidas.
-8. *Consumo de Agua (CH2O):* Litros de agua consumidos al día.
-9. *Actividad Física (FAF):* Frecuencia de actividad física semanal.
-10. *Uso de Tecnología (TUE):* Tiempo dedicado a dispositivos electrónicos.
-11. *Consumo de Alcohol (CALC):* Frecuencia de consumo de bebidas alcohólicas.
-12. *Medio de Transporte (MTRANS):* Modo de transporte utilizado regularmente.
+Coursework for **Econometría**, year 3 of the double degree in Computer Science and Business
+Administration, University of Granada (2024-25).
 
-## Metodología
+## The problem
 
-1. *Construcción del Modelo:*
-   - Se utilizó un modelo de regresión lineal múltiple para evaluar las relaciones entre el peso y las variables independientes.
-   - Los parámetros fueron estimados mediante el método de Mínimos Cuadrados Ordinarios (MCO).
-   
-2. *Problemas Identificados y Soluciones:*
-   - *Multicolinealidad:* Detectada en algunas variables, fue tratada manteniendo aquellas con mayor importancia predictiva y explorando técnicas de regularización.
-   - *Heterocedasticidad:* Corregida mediante Mínimos Cuadrados Ponderados (MCP), mejorando la consistencia de los estimadores.
+Given 2.111 records with seventeen variables about diet, activity, transport and family
+history, estimate weight and say which factors actually matter.
 
-3. *Evaluación del Modelo:*
-   - Coeficientes de determinación \(R^2\) y \(R^2_{ajustado}\) mostraron un ajuste razonable (57.6% de varianza explicada).
-   - Criterios de información (AIC y BIC) fueron utilizados para comparar y optimizar el modelo.
+The estimation is the easy half. A regression always returns coefficients; the work is
+showing they mean something, which is where multicollinearity, heteroscedasticity and
+autocorrelation come in: each one breaks a different assumption, and each one breaks the
+model in a different way.
 
-## Resultados
+## The solution
 
-El modelo identificó los factores clave que afectan el peso, como:
-- Altura, edad y antecedentes familiares de sobrepeso con un impacto positivo.
-- Actividad física y uso de tecnología asociados a una disminución del peso.
+**The model.** Ordinary least squares with `statsmodels`, weight as the dependent variable
+and twelve regressors: age, height, family history of overweight, high-calorie food, vegetable
+intake, main meals a day, eating between meals, water, physical activity, screen time,
+alcohol and means of transport. The categorical ones are label-encoded before entering the
+matrix.
 
-## Conclusión
+**The diagnostics**, each with its own report in `docs/`:
 
-Este modelo econométrico proporciona una base sólida para el análisis de la obesidad, identificando variables críticas que pueden guiar intervenciones efectivas. A pesar de sus limitaciones, representa un paso importante hacia una comprensión más integral del problema.
+| Check | What it looks for | How |
+| --- | --- | --- |
+| Multicollinearity | Regressors that carry the same information | Variance inflation factors and the correlation matrix |
+| Heteroscedasticity | Residual variance that grows with the fitted value | Residual plots and formal tests |
+| Autocorrelation | Residuals that carry information from the previous one | Durbin-Watson |
 
-## Recursos
+The preliminary model and the final one are separate documents on purpose: the second one
+exists because the first one failed a diagnostic.
 
-- [Dataset de Kaggle](https://www.kaggle.com/datasets/fatemehmehrparvar/obesity-levels)
-- Código y materiales disponibles en [este repositorio](https://github.com/ElblogdeIsmael/ElblogdeIsmael.github.io/tree/main/Asignaturas/Tercer%20A%C3%B1o/ECO/Practicas/Trabajo).
+## Layout
+
+```
+src/model.py       the analysis, exported from Colab
+src/model.ipynb    the same notebook, with its output
+data/              the obesity dataset, 2.111 rows
+docs/              the four reports, the presentation charts and the dataset description
+tools/check.py     the check the CI runs
+```
+
+## Requirements
+
+- Python 3.12 with `pandas`, `numpy`, `statsmodels`, `scipy` and `matplotlib`.
+
+## Build and run
+
+The script is a Colab export: it mounts Google Drive and reads the dataset from there, so it
+does not run unchanged outside Colab. Opening the notebook is the direct way, and the data is
+now in the repository:
+
+```bash
+jupyter lab src/model.ipynb        # the path to the dataset is data/obesity-dataset.csv
+python3 tools/check.py             # what the CI runs
+```
+
+## Results
+
+The fitted model, from `docs/econometric-model.pdf`:
+
+| Measure | Value |
+| --- | --- |
+| R² | 0,576 |
+| Adjusted R² | 0,572 |
+| F statistic | 177,5 (p < 0,001) |
+
+The model explains 57,6 % of the variation in weight, and the F test says the regressors are
+jointly significant. The gap between R² and its adjusted version is small, which means the
+twelve variables are pulling their weight rather than padding the fit.
+
+The CI prints, on every push:
+
+```
+ok    src/model.py parses
+ok    src/model.ipynb: 74 cells, 36 of them code
+ok    data/obesity-dataset.csv: 2111 rows, 17 columns, all regressors present
+```
+
+## What I learned
+
+- Explaining 57 % of a person's weight from their habits is a decent fit and a bad predictor.
+  The interesting output is which coefficients survive the diagnostics, not the R².
+- Label-encoding an ordinal variable such as "how often you eat between meals" imposes an
+  order and a distance on it. It is a modelling choice made in one line of code and worth a
+  paragraph of justification.
+- **Limitations:**
+  - The script cannot run outside Colab without editing the path it reads the dataset from.
+    That path is left as it was handed in, and the notebook plus the data in `data/` are the
+    way to reproduce the analysis.
+  - The dataset is partly synthetic: it comes with the source, and the reports say so.
+  - The reports and the comments are in Spanish.
+
+## Author and licence
+
+Ismael Sallami Moreno. Released under the MIT licence (see `LICENSE`).
