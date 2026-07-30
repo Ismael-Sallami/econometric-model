@@ -11,7 +11,8 @@ diagnostics that decide whether its coefficients can be believed.
 ## Context
 
 Coursework for **Econometría**, year 3 of the double degree in Computer Science and Business
-Administration, University of Granada (2024-25).
+Administration, University of Granada (2024-25). Team work with **José Ángel Carretero
+Montes** and **Fernando José Gracia Choin**: the three of us sign every report in `docs/`.
 
 ## The problem
 
@@ -103,6 +104,7 @@ ok    data/obesity-dataset.csv: 2111 rows, 17 columns, all regressors present
   - The dataset is partly synthetic: it comes with the source, and the reports say so.
   - The reports and the comments are in Spanish.
 
-## Author and licence
+## Authors and licence
 
-Ismael Sallami Moreno. Released under the MIT licence (see `LICENSE`).
+Ismael Sallami Moreno, José Ángel Carretero Montes and Fernando José Gracia Choin. Released
+under the MIT licence (see `LICENSE`).
