@@ -90,7 +90,7 @@ ok    src/model.ipynb: 74 cells, 36 of them code
 ok    data/obesity-dataset.csv: 2111 rows, 17 columns, all regressors present
 ```
 
-## What I learned
+## What we learned
 
 - Explaining 57 % of a person's weight from their habits is a decent fit and a bad predictor.
   The interesting output is which coefficients survive the diagnostics, not the R².
