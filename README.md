@@ -10,8 +10,8 @@ diagnostics that decide whether its coefficients can be believed.
 
 ## Context
 
-Coursework for **Econometría**, year 3 of the double degree in Computer Science and Business
-Administration, University of Granada (2024-25). Team work with **José Ángel Carretero
+Coursework for **Econometrics**, year 3 of the double degree in Computer Science and
+Business Administration, University of Granada (2024-25). Team work with **José Ángel Carretero
 Montes** and **Fernando José Gracia Choin**: the three of us sign every report in `docs/`.
 
 ## The problem
